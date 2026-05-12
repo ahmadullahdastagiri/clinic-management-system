@@ -12,7 +12,6 @@ const app = express();
 // middleware
 app.use(morgan("dev"));
 app.use(express.json());
-app.use(express.urlencoded(true));
 
 // connect to database
 connectDB();
