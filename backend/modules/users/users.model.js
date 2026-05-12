@@ -68,7 +68,6 @@ const usersSchema = mongoose.Schema(
   },
 );
 
-//
 usersSchema.index({ email: 1 });
 
 // Hash the password using bcrypt
