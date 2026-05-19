@@ -68,21 +68,6 @@ const usersSchema = mongoose.Schema(
   },
 );
 
-usersSchema.index({ email: 1 });
-
-// Hash the password using bcrypt
-usersSchema.pre("save", async function (next) {
-  try {
-    if (!this.isModified("password")) return next();
-
-    const hashedPassword = await bcrypt.hash(this.password, 10);
-    this.password = hashedPassword;
-    next();
-  } catch (error) {
-    next(error);
-  }
-});
-
 // compare candidate password with user password
 usersSchema.methods.comparePassword = async function (candidatePassword) {
   try {
