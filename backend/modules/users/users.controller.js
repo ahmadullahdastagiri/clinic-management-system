@@ -1,5 +1,10 @@
 import { success, ZodError } from "zod";
-import { createUser, allUsers, getUserById } from "./users.service.js";
+import {
+  createUser,
+  allUsers,
+  getUserById,
+  updateUserById,
+} from "./users.service.js";
 
 /**
  * POST /register
@@ -15,7 +20,7 @@ export const createUserController = async (req, res) => {
   } catch (error) {
     console.log("Creating new user:-", error.message);
     return res
-      .status(400)
+      .status(500)
       .json({ message: "Internal server error", error: error.message });
   }
 };
@@ -35,7 +40,7 @@ export const getAllUsersController = async (req, res) => {
     return res.status(200).json(users);
   } catch (error) {
     console.log("Getting all users:-", error.message);
-    return res.status(400).json({ error: error.message });
+    return res.status(500).json({ error: error.message });
   }
 };
 
@@ -43,13 +48,28 @@ export const getAllUsersController = async (req, res) => {
  * GET /users/:id
  * Retrieves a user by ID
  */
-export const getUserByIdController = async (req, res) => {
+export const getUserByIdController = async (req, res, next) => {
   try {
     const user = await getUserById(req.params.id);
     return res
       .status(200)
       .json({ message: "User retrieved successfully.", user });
   } catch (error) {
-    return res.status(400).json({ error: error.message });
+    next(error);
+  }
+};
+
+/**
+ * PUT /users/:id
+ * Updates a user by ID
+ */
+export const updateUserByIdController = async (req, res, next) => {
+  try {
+    const updatedUser = await updateUserById(req.params.id, req.body);
+    return res
+      .status(200)
+      .json({ message: "User updated successfully.", user: updatedUser });
+  } catch (error) {
+    next(error);
   }
 };

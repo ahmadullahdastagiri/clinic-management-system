@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
-import * as userRepository from "./users.repository.js";
 import mongoose, { mongo } from "mongoose";
+import * as userRepository from "./users.repository.js";
 
 /** 
   Register a new user.
@@ -49,3 +49,39 @@ export const getUserById = async (id) => {
   if (!user) throw new Error("No user found");
   return user;
 };
+
+/**
+  Update user by id.
+  @param {Object} userId - The id of the user to be updated.  
+  @param {Object} updateData - The data to update the user with.
+  @returns {Object} The updated user object.
+  @throws Will throw an error if the user id is invalid or the user is not found.
+ */
+export const updateUserById = async (id, updateData) => {
+  if (!mongoose.Types.ObjectId.isValid(id)) throw new Error("Invalid user id");
+
+  const user = await userRepository.findUserById(id);
+  if (!user) throw new Error("No user found");
+
+  const payload = { ...updateData };
+
+  if (payload.email && payload.email !== user.email) {
+    payload.isEmailVerified = false;
+  }
+
+  if (payload.phone && payload.phone !== user.phone) {
+    payload.isPhoneVerified = false;
+  }
+
+  if (payload.password) {
+    payload.password = await bcrypt.hash(payload.password, 10);
+  }
+
+  const updatedUser = await userRepository.updateUserById(id, payload);
+  if (!updatedUser) throw new Error("Failed to update user");
+
+  return updatedUser;
+};
+
+/**
+ */
