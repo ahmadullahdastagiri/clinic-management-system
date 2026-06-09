@@ -18,10 +18,7 @@ export const createUserController = async (req, res) => {
       user,
     });
   } catch (error) {
-    console.log("Creating new user:-", error.message);
-    return res
-      .status(500)
-      .json({ message: "Internal server error", error: error.message });
+    next(error);
   }
 };
 
@@ -39,8 +36,7 @@ export const getAllUsersController = async (req, res) => {
 
     return res.status(200).json(users);
   } catch (error) {
-    console.log("Getting all users:-", error.message);
-    return res.status(500).json({ error: error.message });
+    next(error);
   }
 };
 

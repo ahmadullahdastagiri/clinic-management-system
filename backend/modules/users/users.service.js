@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import mongoose, { mongo } from "mongoose";
+import AppError from "../../utils/AppError.js";
 import * as userRepository from "./users.repository.js";
 
 /** 
@@ -11,7 +12,12 @@ import * as userRepository from "./users.repository.js";
 export const createUser = async (userData) => {
   const existingUser = await userRepository.findUserByEmail(userData.email);
   if (existingUser) {
-    throw new Error("User with this email already exists");
+    throw new AppError(
+      "User with this email already exists",
+      400,
+      true,
+      "USER_ALREADY_EXISTS",
+    );
   }
 
   const hashedPassword = await bcrypt.hash(userData.password, 10);
@@ -31,7 +37,8 @@ export const createUser = async (userData) => {
 export const allUsers = async ({ page, limit }) => {
   const users = await userRepository.allUsers({ page, limit });
 
-  if (!users) throw new Error("No users found");
+  if (!users)
+    throw new AppError("No users found", 404, true, "USERS_NOT_FOUND");
 
   return users;
 };
@@ -43,10 +50,11 @@ export const allUsers = async ({ page, limit }) => {
   @throws Will throw an error if the user id is invalid or the user is not found.
  */
 export const getUserById = async (id) => {
-  if (!mongoose.Types.ObjectId.isValid(id)) throw new Error("Invalid user id");
+  if (!mongoose.Types.ObjectId.isValid(id))
+    throw new AppError("Invalid user id", 400, true, "INVALID_USER_ID");
 
   const user = await userRepository.findUserById(id);
-  if (!user) throw new Error("No user found");
+  if (!user) throw new AppError("No user found", 404, true, "USER_NOT_FOUND");
   return user;
 };
 
@@ -58,10 +66,11 @@ export const getUserById = async (id) => {
   @throws Will throw an error if the user id is invalid or the user is not found.
  */
 export const updateUserById = async (id, updateData) => {
-  if (!mongoose.Types.ObjectId.isValid(id)) throw new Error("Invalid user id");
+  if (!mongoose.Types.ObjectId.isValid(id))
+    throw new AppError("Invalid user id", 400, true, "INVALID_USER_ID");
 
   const user = await userRepository.findUserById(id);
-  if (!user) throw new Error("No user found");
+  if (!user) throw new AppError("No user found", 404, true, "USER_NOT_FOUND");
 
   const payload = { ...updateData };
 
@@ -78,7 +87,13 @@ export const updateUserById = async (id, updateData) => {
   }
 
   const updatedUser = await userRepository.updateUserById(id, payload);
-  if (!updatedUser) throw new Error("Failed to update user");
+  if (!updatedUser)
+    throw new AppError(
+      "Failed to update user",
+      500,
+      true,
+      "USER_UPDATE_FAILED",
+    );
 
   return updatedUser;
 };
