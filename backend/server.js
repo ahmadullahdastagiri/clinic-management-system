@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import morgan from "morgan";
 
 import connectDB from "./config/database.config.js";
+import { errorHandler } from "./middlewares/errorHandler.middleware.js";
 import userRoutes from "./modules/users/users.route.js";
 
 dotenv.config();
@@ -18,7 +19,7 @@ connectDB();
 
 // routes
 app.use("/api/users", userRoutes);
-
+app.use(errorHandler);
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
