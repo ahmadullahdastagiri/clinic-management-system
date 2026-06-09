@@ -25,10 +25,10 @@ export const allUsers = async ({ page = 1, limit = 10 }) => {
 export const updateUserById = (id, payload) =>
   User.findByIdAndUpdate(id, payload, { new: true, runValidators: true });
 
-export const updateUserPasswordById = (id, newPassword) =>
+export const updateUserPasswordById = (id, { password }) =>
   User.findByIdAndUpdate(
     id,
-    { password: newPassword },
+    { password: password },
     { new: true, runValidators: true },
   );
 
