@@ -69,3 +69,21 @@ export const updateUserByIdController = async (req, res, next) => {
     next(error);
   }
 };
+
+/**
+ * PUT /users/:id/password
+ * Updates a user's password by ID
+ */
+export const updateUserPasswordController = async (req, res, next) => {
+  try {
+    const updatedUser = await updateUserById(req.params.id, req.body);
+    return res
+      .status(200)
+      .json({
+        message: "User password updated successfully.",
+        user: updatedUser,
+      });
+  } catch (error) {
+    next(error);
+  }
+};

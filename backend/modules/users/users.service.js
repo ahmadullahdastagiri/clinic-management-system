@@ -86,17 +86,46 @@ export const updateUserById = async (id, updateData) => {
     payload.password = await bcrypt.hash(payload.password, 10);
   }
 
-  const updatedUser = await userRepository.updateUserById(id, payload);
+  const updatedUser = await userRepository.updateUserPasswordById(id, payload);
   if (!updatedUser)
     throw new AppError(
-      "Failed to update user",
+      "Failed to update user password",
       500,
       true,
-      "USER_UPDATE_FAILED",
+      "USER_PASSWORD_UPDATE_FAILED",
     );
 
   return updatedUser;
 };
 
 /**
+ * Update user password by id.
+ * @param {Object} userId - The id of the user to be updated.
+ * @param {Object} updateData - The data to update the user with.
+ * @returns {Object} The updated user object.
+ * @throws Will throw an error if the user id is invalid or the user is not found.
  */
+export const updateUserPasswordById = async (id, updateData) => {
+  if (!mongoose.Types.ObjectId.isValid(id))
+    throw new AppError("Invalid user id", 400, true, "INVALID_USER_ID");
+
+  const user = await userRepository.findUserById(id);
+  if (!user) throw new AppError("No user found", 404, true, "USER_NOT_FOUND");
+
+  const payload = { ...updateData };
+
+  if (payload.password) {
+    payload.password = await bcrypt.hash(payload.password, 10);
+  }
+
+  const updatedUser = await userRepository.updateUserPasswordById(id, payload);
+  if (!updatedUser)
+    throw new AppError(
+      "Failed to update user password",
+      500,
+      true,
+      "USER_PASSWORD_UPDATE_FAILED",
+    );
+
+  return updatedUser;
+};
