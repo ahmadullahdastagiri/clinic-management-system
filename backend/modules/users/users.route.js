@@ -1,8 +1,10 @@
 import express from "express";
 import {
   activateUserController,
+  assignRoleToUserController,
   createUserController,
   deactivateUserController,
+  deleteUserController,
   getAllUsersController,
   getUserByIdController,
   updateUserByIdController,
@@ -13,6 +15,7 @@ import {
   createUserSchema,
   updateUserSchema,
   updateUserPasswordSchema,
+  assignRoleToUserSchema,
 } from "./users.validation.js";
 
 const router = express.Router();
@@ -28,5 +31,11 @@ router.put(
 );
 router.put("/user/:id/activate", activateUserController);
 router.put("/user/:id/deactivate", deactivateUserController);
+router.put(
+  "/user/:id/assign-role",
+  validate(assignRoleToUserSchema),
+  assignRoleToUserController,
+);
+router.delete("/user/:id", deleteUserController);
 
 export default router;

@@ -139,6 +139,9 @@ export const activateUserById = async (id) => {
   if (!mongoose.Types.ObjectId.isValid(id))
     throw new AppError("Invalid user id", 400, true, "INVALID_USER_ID");
 
+  const user = await userRepository.findUserById(id);
+  if (!user) throw new AppError("No user found", 404, true, "USER_NOT_FOUND");
+
   const activateUser = await userRepository.activateUserById(id);
   if (!activateUser)
     throw new AppError(
@@ -160,6 +163,9 @@ export const deactivateUserById = async (id) => {
   if (!mongoose.Types.ObjectId.isValid(id))
     throw new AppError("Invalid user id", 400, true, "INVALID_USER_ID");
 
+  const user = await userRepository.findUserById(id);
+  if (!user) throw new AppError("No user found", 404, true, "USER_NOT_FOUND");
+
   const deactivateUser = await userRepository.deactivateUserById(id);
   if (!deactivateUser)
     throw new AppError(
@@ -170,4 +176,54 @@ export const deactivateUserById = async (id) => {
     );
 
   return deactivateUser;
+};
+
+/**
+ * Assign role to user by id.
+ * @param {Object} userId - The id of the user to be assigned role.
+ * @param {Object} userRole - The role to be update the user with.
+ * @returns {Object} The updated user with the assign role.
+ */
+export const assignRoleById = async (id, assignRole) => {
+  if (!mongoose.Types.ObjectId.isValid(id))
+    throw new AppError("Invalid user id", 400, true, "INVALID_USER_ID");
+
+  const user = await userRepository.findUserById(id);
+  if (!user) throw new AppError("No user found", 404, true, "USER_NOT_FOUND");
+
+  const assignRoleToUser = await userRepository.assignRoleToUser(
+    id,
+    assignRole,
+  );
+  if (!assignRoleToUser)
+    throw new AppError(
+      "Failed to assign role",
+      500,
+      true,
+      "ASSIGN_ROLE_TO_USER_FAILED",
+    );
+  return assignRoleToUser;
+};
+
+/**
+ * Delete user by id.
+ * @param {Object} userId - The id of user to be deleted.
+ * @returns {Object} The deleted user
+ */
+export const deleteUserById = async (id) => {
+  if (!mongoose.Types.ObjectId.isValid(id))
+    throw new AppError("Invalid user id", 400, true, "INVALID_USER_ID");
+
+  const user = await userRepository.findUserById(id);
+  if (!user) throw new AppError("No user found", 404, true, "USER_NOT_FOUND");
+
+  const deleteUser = await userRepository.deleteUserById(id);
+  if (!deleteUser)
+    throw new AppError(
+      "Failed to delete user",
+      500,
+      true,
+      "FAILED_TO_DELETE_USER",
+    );
+  return deleteUser;
 };

@@ -7,6 +7,7 @@ import {
   activateUserById,
   deactivateUserById,
   assignRoleById,
+  deleteUserById,
 } from "./users.service.js";
 
 /**
@@ -115,6 +116,39 @@ export const deactivateUserController = async (req, res, next) => {
     return res.status(200).json({
       message: "User deactivated successfully.",
       user: deactivateUser,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * PUT /users/:id/assign-role
+ * Assigns role to a user's by ID
+ */
+export const assignRoleToUserController = async (req, res, next) => {
+  try {
+    const assignRoleToUser = await assignRoleById(req.params.id, req.body);
+    return res.status(200).json({
+      message: "User role assigned successfully.",
+      user: assignRoleToUser,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * DELETE /users/:id
+ * Deletes a user's by ID
+ */
+export const deleteUserController = async (req, res, next) => {
+  try {
+    const deleteUser = await deleteUserById(req.params.id);
+    console.log("deleteUser");
+    return res.status(200).json({
+      message: "User deleted successfully",
+      user: deleteUser,
     });
   } catch (error) {
     next(error);
