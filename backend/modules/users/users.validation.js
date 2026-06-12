@@ -27,3 +27,7 @@ export const updateUserPasswordSchema = z.object({
     .min(8, "Password must be at least 8 characters long")
     .optional(),
 });
+
+export const assignRoleToUserSchema = z.object({
+  role: z.enum(["admin", "doctor", "receptionist", "laboratorian"]).optional(),
+});
