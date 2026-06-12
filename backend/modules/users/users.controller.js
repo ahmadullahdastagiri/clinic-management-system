@@ -4,6 +4,8 @@ import {
   allUsers,
   getUserById,
   updateUserById,
+  activateUserById,
+  deactivateUserById,
 } from "./users.service.js";
 
 /**
@@ -77,12 +79,41 @@ export const updateUserByIdController = async (req, res, next) => {
 export const updateUserPasswordController = async (req, res, next) => {
   try {
     const updatedUser = await updateUserById(req.params.id, req.body);
-    return res
-      .status(200)
-      .json({
-        message: "User password updated successfully.",
-        user: updatedUser,
-      });
+    return res.status(200).json({
+      message: "User password updated successfully.",
+      user: updatedUser,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * PUT /users/:id/activate
+ * Activates a user's by ID
+ */
+export const activateUserController = async (req, res, next) => {
+  try {
+    const activateUser = await activateUserById(req.params.id);
+    return res.status(200).json({
+      message: "User activated successfully.",
+      user: activateUser,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+/**
+ * PUT /users/:id/activate
+ * Deactivates a user's by ID
+ */
+export const deactivateUserController = async (req, res, next) => {
+  try {
+    const deactivateUser = await deactivateUserById(req.params.id);
+    return res.status(200).json({
+      message: "User deactivated successfully.",
+      user: deactivateUser,
+    });
   } catch (error) {
     next(error);
   }

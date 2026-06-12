@@ -1,6 +1,8 @@
 import express from "express";
 import {
+  activateUserController,
   createUserController,
+  deactivateUserController,
   getAllUsersController,
   getUserByIdController,
   updateUserByIdController,
@@ -24,5 +26,7 @@ router.put(
   validate(updateUserPasswordSchema),
   updateUserPasswordController,
 );
+router.put("/user/:id/activate", activateUserController);
+router.put("/user/:id/deactivate", deactivateUserController);
 
 export default router;

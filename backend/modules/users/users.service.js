@@ -129,3 +129,45 @@ export const updateUserPasswordById = async (id, updateData) => {
 
   return updatedUser;
 };
+
+/**
+ * Activate user by id.
+ * @param {Object} userId - The id of the user to be activated.
+ * @returns {Object} The activated user object
+ */
+export const activateUserById = async (id) => {
+  if (!mongoose.Types.ObjectId.isValid(id))
+    throw new AppError("Invalid user id", 400, true, "INVALID_USER_ID");
+
+  const activateUser = await userRepository.activateUserById(id);
+  if (!activateUser)
+    throw new AppError(
+      "Failed to activate user.",
+      500,
+      true,
+      "USER_ACTIVATION_FAILED",
+    );
+
+  return activateUser;
+};
+
+/**
+ * Deactivate user by id.
+ * @param {Object} userId - The id of the user to be deactivated.
+ * @returns {Object} The activated user object
+ */
+export const deactivateUserById = async (id) => {
+  if (!mongoose.Types.ObjectId.isValid(id))
+    throw new AppError("Invalid user id", 400, true, "INVALID_USER_ID");
+
+  const deactivateUser = await userRepository.deactivateUserById(id);
+  if (!deactivateUser)
+    throw new AppError(
+      "Failed to deactivate user.",
+      500,
+      true,
+      "USER_DEACTIVATION_FAILED",
+    );
+
+  return deactivateUser;
+};
