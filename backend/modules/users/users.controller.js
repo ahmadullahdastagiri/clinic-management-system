@@ -6,13 +6,14 @@ import {
   updateUserById,
   activateUserById,
   deactivateUserById,
+  assignRoleById,
 } from "./users.service.js";
 
 /**
  * POST /register
  * Creates a new user
  */
-export const createUserController = async (req, res) => {
+export const createUserController = async (req, res, next) => {
   try {
     const user = await createUser(req.body);
     return res.status(201).json({
@@ -28,7 +29,7 @@ export const createUserController = async (req, res) => {
  * GET /users
  * Retrieves all users
  */
-export const getAllUsersController = async (req, res) => {
+export const getAllUsersController = async (req, res, next) => {
   try {
     const { page, limit } = req.query;
     const users = await allUsers({
@@ -103,6 +104,7 @@ export const activateUserController = async (req, res, next) => {
     next(error);
   }
 };
+
 /**
  * PUT /users/:id/activate
  * Deactivates a user's by ID
