@@ -39,7 +39,11 @@ export const activateUserById = (id) =>
   User.findByIdAndUpdate(id, { isActive: true }, { new: true });
 
 export const deactivateUserById = (id) =>
-  User.findByIdAndUpdate(id, { isActive: false }, { new: true });
+  User.findByIdAndUpdate(
+    id,
+    { isActive: false },
+    { new: true, runValidators: true },
+  );
 
 export const verifyUserByEmail = (email) =>
   User.findOneAndUpdate(
@@ -52,7 +56,7 @@ export const verifyUserByPhone = (phone) =>
   User.findOneAndUpdate({ phone }, { isPhoneVerified: true }, { new: true });
 
 export const assignRoleToUser = (id, role) =>
-  User.findByIdAndUpdate(id, { role }, { new: true });
+  User.findByIdAndUpdate(id, role, { new: true });
 
 /* DELETE */
 export const deleteUserById = (id) => User.findByIdAndDelete(id);
