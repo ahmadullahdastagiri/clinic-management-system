@@ -11,16 +11,7 @@ export const validate = (schema) => {
       req.body = result; // Replace with the validated and parsed data
       next();
     } catch (error) {
-      if (error instanceof ZodError) {
-        return res.status(400).json({
-          success: false,
-          message: "Validation Error",
-          errors: error.issues.map((err) => ({
-            field: err.path.join("."),
-            message: err.message,
-          })),
-        });
-      }
+      next(error);
     }
   };
 };

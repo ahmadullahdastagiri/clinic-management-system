@@ -25,10 +25,10 @@ export const allUsers = async ({ page = 1, limit = 10 }) => {
 export const updateUserById = (id, payload) =>
   User.findByIdAndUpdate(id, payload, { new: true, runValidators: true });
 
-export const updateUserPasswordById = (id, newPassword) =>
+export const updateUserPasswordById = (id, { password }) =>
   User.findByIdAndUpdate(
     id,
-    { password: newPassword },
+    { password: password },
     { new: true, runValidators: true },
   );
 
@@ -39,7 +39,11 @@ export const activateUserById = (id) =>
   User.findByIdAndUpdate(id, { isActive: true }, { new: true });
 
 export const deactivateUserById = (id) =>
-  User.findByIdAndUpdate(id, { isActive: false }, { new: true });
+  User.findByIdAndUpdate(
+    id,
+    { isActive: false },
+    { new: true, runValidators: true },
+  );
 
 export const verifyUserByEmail = (email) =>
   User.findOneAndUpdate(
@@ -52,7 +56,7 @@ export const verifyUserByPhone = (phone) =>
   User.findOneAndUpdate({ phone }, { isPhoneVerified: true }, { new: true });
 
 export const assignRoleToUser = (id, role) =>
-  User.findByIdAndUpdate(id, { role }, { new: true });
+  User.findByIdAndUpdate(id, role, { new: true });
 
 /* DELETE */
 export const deleteUserById = (id) => User.findByIdAndDelete(id);

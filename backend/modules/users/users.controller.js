@@ -4,13 +4,17 @@ import {
   allUsers,
   getUserById,
   updateUserById,
+  activateUserById,
+  deactivateUserById,
+  assignRoleById,
+  deleteUserById,
 } from "./users.service.js";
 
 /**
  * POST /register
  * Creates a new user
  */
-export const createUserController = async (req, res) => {
+export const createUserController = async (req, res, next) => {
   try {
     const user = await createUser(req.body);
     return res.status(201).json({
@@ -18,10 +22,7 @@ export const createUserController = async (req, res) => {
       user,
     });
   } catch (error) {
-    console.log("Creating new user:-", error.message);
-    return res
-      .status(500)
-      .json({ message: "Internal server error", error: error.message });
+    next(error);
   }
 };
 
@@ -29,7 +30,7 @@ export const createUserController = async (req, res) => {
  * GET /users
  * Retrieves all users
  */
-export const getAllUsersController = async (req, res) => {
+export const getAllUsersController = async (req, res, next) => {
   try {
     const { page, limit } = req.query;
     const users = await allUsers({
@@ -39,8 +40,7 @@ export const getAllUsersController = async (req, res) => {
 
     return res.status(200).json(users);
   } catch (error) {
-    console.log("Getting all users:-", error.message);
-    return res.status(500).json({ error: error.message });
+    next(error);
   }
 };
 
@@ -69,6 +69,87 @@ export const updateUserByIdController = async (req, res, next) => {
     return res
       .status(200)
       .json({ message: "User updated successfully.", user: updatedUser });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * PUT /users/:id/password
+ * Updates a user's password by ID
+ */
+export const updateUserPasswordController = async (req, res, next) => {
+  try {
+    const updatedUser = await updateUserById(req.params.id, req.body);
+    return res.status(200).json({
+      message: "User password updated successfully.",
+      user: updatedUser,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * PUT /users/:id/activate
+ * Activates a user's by ID
+ */
+export const activateUserController = async (req, res, next) => {
+  try {
+    const activateUser = await activateUserById(req.params.id);
+    return res.status(200).json({
+      message: "User activated successfully.",
+      user: activateUser,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * PUT /users/:id/activate
+ * Deactivates a user's by ID
+ */
+export const deactivateUserController = async (req, res, next) => {
+  try {
+    const deactivateUser = await deactivateUserById(req.params.id);
+    return res.status(200).json({
+      message: "User deactivated successfully.",
+      user: deactivateUser,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * PUT /users/:id/assign-role
+ * Assigns role to a user's by ID
+ */
+export const assignRoleToUserController = async (req, res, next) => {
+  try {
+    const assignRoleToUser = await assignRoleById(req.params.id, req.body);
+    return res.status(200).json({
+      message: "User role assigned successfully.",
+      user: assignRoleToUser,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * DELETE /users/:id
+ * Deletes a user's by ID
+ */
+export const deleteUserController = async (req, res, next) => {
+  try {
+    const deleteUser = await deleteUserById(req.params.id);
+    console.log("deleteUser");
+    return res.status(200).json({
+      message: "User deleted successfully",
+      user: deleteUser,
+    });
   } catch (error) {
     next(error);
   }

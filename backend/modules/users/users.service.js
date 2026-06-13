@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import mongoose, { mongo } from "mongoose";
+import AppError from "../../utils/AppError.js";
 import * as userRepository from "./users.repository.js";
 
 /** 
@@ -11,7 +12,12 @@ import * as userRepository from "./users.repository.js";
 export const createUser = async (userData) => {
   const existingUser = await userRepository.findUserByEmail(userData.email);
   if (existingUser) {
-    throw new Error("User with this email already exists");
+    throw new AppError(
+      "User with this email already exists",
+      400,
+      true,
+      "USER_ALREADY_EXISTS",
+    );
   }
 
   const hashedPassword = await bcrypt.hash(userData.password, 10);
@@ -31,7 +37,8 @@ export const createUser = async (userData) => {
 export const allUsers = async ({ page, limit }) => {
   const users = await userRepository.allUsers({ page, limit });
 
-  if (!users) throw new Error("No users found");
+  if (!users)
+    throw new AppError("No users found", 404, true, "USERS_NOT_FOUND");
 
   return users;
 };
@@ -43,10 +50,11 @@ export const allUsers = async ({ page, limit }) => {
   @throws Will throw an error if the user id is invalid or the user is not found.
  */
 export const getUserById = async (id) => {
-  if (!mongoose.Types.ObjectId.isValid(id)) throw new Error("Invalid user id");
+  if (!mongoose.Types.ObjectId.isValid(id))
+    throw new AppError("Invalid user id", 400, true, "INVALID_USER_ID");
 
   const user = await userRepository.findUserById(id);
-  if (!user) throw new Error("No user found");
+  if (!user) throw new AppError("No user found", 404, true, "USER_NOT_FOUND");
   return user;
 };
 
@@ -58,10 +66,11 @@ export const getUserById = async (id) => {
   @throws Will throw an error if the user id is invalid or the user is not found.
  */
 export const updateUserById = async (id, updateData) => {
-  if (!mongoose.Types.ObjectId.isValid(id)) throw new Error("Invalid user id");
+  if (!mongoose.Types.ObjectId.isValid(id))
+    throw new AppError("Invalid user id", 400, true, "INVALID_USER_ID");
 
   const user = await userRepository.findUserById(id);
-  if (!user) throw new Error("No user found");
+  if (!user) throw new AppError("No user found", 404, true, "USER_NOT_FOUND");
 
   const payload = { ...updateData };
 
@@ -77,11 +86,144 @@ export const updateUserById = async (id, updateData) => {
     payload.password = await bcrypt.hash(payload.password, 10);
   }
 
-  const updatedUser = await userRepository.updateUserById(id, payload);
-  if (!updatedUser) throw new Error("Failed to update user");
+  const updatedUser = await userRepository.updateUserPasswordById(id, payload);
+  if (!updatedUser)
+    throw new AppError(
+      "Failed to update user password",
+      500,
+      true,
+      "USER_PASSWORD_UPDATE_FAILED",
+    );
 
   return updatedUser;
 };
 
 /**
+ * Update user password by id.
+ * @param {Object} userId - The id of the user to be updated.
+ * @param {Object} updateData - The data to update the user with.
+ * @returns {Object} The updated user object.
+ * @throws Will throw an error if the user id is invalid or the user is not found.
  */
+export const updateUserPasswordById = async (id, updateData) => {
+  if (!mongoose.Types.ObjectId.isValid(id))
+    throw new AppError("Invalid user id", 400, true, "INVALID_USER_ID");
+
+  const user = await userRepository.findUserById(id);
+  if (!user) throw new AppError("No user found", 404, true, "USER_NOT_FOUND");
+
+  const payload = { ...updateData };
+
+  if (payload.password) {
+    payload.password = await bcrypt.hash(payload.password, 10);
+  }
+
+  const updatedUser = await userRepository.updateUserPasswordById(id, payload);
+  if (!updatedUser)
+    throw new AppError(
+      "Failed to update user password",
+      500,
+      true,
+      "USER_PASSWORD_UPDATE_FAILED",
+    );
+
+  return updatedUser;
+};
+
+/**
+ * Activate user by id.
+ * @param {Object} userId - The id of the user to be activated.
+ * @returns {Object} The activated user object
+ */
+export const activateUserById = async (id) => {
+  if (!mongoose.Types.ObjectId.isValid(id))
+    throw new AppError("Invalid user id", 400, true, "INVALID_USER_ID");
+
+  const user = await userRepository.findUserById(id);
+  if (!user) throw new AppError("No user found", 404, true, "USER_NOT_FOUND");
+
+  const activateUser = await userRepository.activateUserById(id);
+  if (!activateUser)
+    throw new AppError(
+      "Failed to activate user.",
+      500,
+      true,
+      "USER_ACTIVATION_FAILED",
+    );
+
+  return activateUser;
+};
+
+/**
+ * Deactivate user by id.
+ * @param {Object} userId - The id of the user to be deactivated.
+ * @returns {Object} The activated user object
+ */
+export const deactivateUserById = async (id) => {
+  if (!mongoose.Types.ObjectId.isValid(id))
+    throw new AppError("Invalid user id", 400, true, "INVALID_USER_ID");
+
+  const user = await userRepository.findUserById(id);
+  if (!user) throw new AppError("No user found", 404, true, "USER_NOT_FOUND");
+
+  const deactivateUser = await userRepository.deactivateUserById(id);
+  if (!deactivateUser)
+    throw new AppError(
+      "Failed to deactivate user.",
+      500,
+      true,
+      "USER_DEACTIVATION_FAILED",
+    );
+
+  return deactivateUser;
+};
+
+/**
+ * Assign role to user by id.
+ * @param {Object} userId - The id of the user to be assigned role.
+ * @param {Object} userRole - The role to be update the user with.
+ * @returns {Object} The updated user with the assign role.
+ */
+export const assignRoleById = async (id, assignRole) => {
+  if (!mongoose.Types.ObjectId.isValid(id))
+    throw new AppError("Invalid user id", 400, true, "INVALID_USER_ID");
+
+  const user = await userRepository.findUserById(id);
+  if (!user) throw new AppError("No user found", 404, true, "USER_NOT_FOUND");
+
+  const assignRoleToUser = await userRepository.assignRoleToUser(
+    id,
+    assignRole,
+  );
+  if (!assignRoleToUser)
+    throw new AppError(
+      "Failed to assign role",
+      500,
+      true,
+      "ASSIGN_ROLE_TO_USER_FAILED",
+    );
+  return assignRoleToUser;
+};
+
+/**
+ * Delete user by id.
+ * @param {Object} userId - The id of user to be deleted.
+ * @returns {Object} The deleted user
+ */
+export const deleteUserById = async (id) => {
+  if (!mongoose.Types.ObjectId.isValid(id))
+    throw new AppError("Invalid user id", 400, true, "INVALID_USER_ID");
+
+  const user = await userRepository.findUserById(id);
+  if (!user) throw new AppError("No user found", 404, true, "USER_NOT_FOUND");
+
+  const deleteUser = await userRepository.deleteUserById(id);
+  if (!deleteUser)
+    throw new AppError(
+      "Failed to delete user",
+      500,
+      true,
+      "FAILED_TO_DELETE_USER",
+    );
+  return deleteUser;
+};
