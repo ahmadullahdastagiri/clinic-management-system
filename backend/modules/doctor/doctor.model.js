@@ -7,6 +7,16 @@ const doctorSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+    firstName: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    lastName: {
+      type: String,
+      required: true,
+      trim: true,
+    },
     specialization: {
       type: String,
       required: true,
