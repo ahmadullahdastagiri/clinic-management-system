@@ -1,4 +1,6 @@
 import {
+  activateDoctorById,
+  deactivateDoctorById,
   createDoctor,
   getAllDoctors,
   getDoctorById,
@@ -29,7 +31,7 @@ export const getDoctorByIdController = async (req, res, next) => {
   try {
     const doctor = await getDoctorById(req.params.id);
     return res.status(200).json({
-      message: "User retrieved successfully",
+      message: "Doctor retrieved successfully",
       doctor,
     });
   } catch (error) {
@@ -64,6 +66,38 @@ export const updateDoctorByIdController = async (req, res, next) => {
     return res.status(200).json({
       message: "Doctor updated successfully",
       updateDoctor,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * PUT /doctor/:id/activate
+ * Activates a doctor's by ID
+ */
+export const activateDoctorController = async (req, res, next) => {
+  try {
+    const activateDoctor = await activateDoctorById(req.params.id);
+    return res.status(200).json({
+      message: "Doctor activated successfully",
+      activateDoctor,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * PUT /doctor/:id/deactivate
+ * Deactivates a doctor's by ID
+ */
+export const deactivateDoctorController = async (req, res, next) => {
+  try {
+    const deactivateDoctor = await deactivateDoctorById(req.params.id);
+    return res.status(200).json({
+      message: "Doctor deactivated successfully",
+      deactivateDoctor,
     });
   } catch (error) {
     next(error);

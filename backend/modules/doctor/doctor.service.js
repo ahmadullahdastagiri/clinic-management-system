@@ -83,3 +83,45 @@ export const updateDoctorById = async (id, updateData) => {
 
   return updateDoctor;
 };
+
+/**
+ * Activates doctor by id
+ * @param {Object} userId - the id of the doctor to be activated
+ * @returns The activate doctor object
+ */
+export const activateDoctorById = async (id) => {
+  if (!mongoose.Types.ObjectId.isValid(id))
+    throw new AppError("Invalid user id", 400, true, "INVALID_USER_ID");
+
+  const activateDoctor = await docotrRepository.activateDoctorById(id);
+  if (!activateDoctor)
+    throw new AppError(
+      "Failed to activate user",
+      500,
+      true,
+      "FAILED_TO_ACTIVATE_USER",
+    );
+
+  return activateDoctor;
+};
+
+/**
+ * Deactivates doctor by id
+ * @param {Object} userId - the id of the doctor to be deactivated
+ * @returns The deactivate doctor object
+ */
+export const deactivateDoctorById = async (id) => {
+  if (!mongoose.Types.ObjectId.isValid(id))
+    throw new AppError("Invalid user id", 400, true, "INVALID_USER_ID");
+
+  const deactivateDoctor = await docotrRepository.deactivateDoctorById(id);
+  if (!deactivateDoctor)
+    throw new AppError(
+      "Failed to deactivate user",
+      500,
+      false,
+      "FAILED_TO_DEACTIVATE_USER",
+    );
+
+  return deactivateDoctor;
+};

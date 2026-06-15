@@ -5,6 +5,8 @@ import {
   getDoctorByIdController,
   allDoctorsController,
   updateDoctorByIdController,
+  activateDoctorController,
+  deactivateDoctorController,
 } from "./doctor.controller.js";
 
 import { createDoctorSchema, updateDoctorSchema } from "./doctor.validation.js";
@@ -23,5 +25,7 @@ router.put(
   validate(updateDoctorSchema),
   updateDoctorByIdController,
 );
+router.put("/doctor/:id/activate", activateDoctorController);
+router.put("/doctor/:id/deactivate", deactivateDoctorController);
 
 export default router;
