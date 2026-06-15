@@ -59,7 +59,8 @@ export const allDoctorsController = async (req, res, next) => {
 };
 
 /**
- * GET /doctor/
+ * GET /doctors/search?search=keyword
+ * Search doctor by name and last name
  */
 export const findDoctorController = async (req, res, next) => {
   try {
