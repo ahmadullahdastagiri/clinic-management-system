@@ -5,6 +5,7 @@ import {
   getAllDoctors,
   getDoctorById,
   updateDoctorById,
+  deleteDoctorById,
 } from "./doctor.service.js";
 
 /**
@@ -98,6 +99,22 @@ export const deactivateDoctorController = async (req, res, next) => {
     return res.status(200).json({
       message: "Doctor deactivated successfully",
       deactivateDoctor,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * DELETE /doctor/:id/delete
+ * Delete doctor by ID
+ */
+export const deleteDoctorController = async (req, res, next) => {
+  try {
+    const deleteDoctor = await deleteDoctorById(req.params.id);
+    return res.status(200).json({
+      message: "Doctor deleted successfully",
+      deleteDoctor,
     });
   } catch (error) {
     next(error);

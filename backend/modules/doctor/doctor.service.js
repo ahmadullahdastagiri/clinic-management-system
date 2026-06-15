@@ -118,10 +118,35 @@ export const deactivateDoctorById = async (id) => {
   if (!deactivateDoctor)
     throw new AppError(
       "Failed to deactivate user",
-      500,
+      400,
       false,
       "FAILED_TO_DEACTIVATE_USER",
     );
 
   return deactivateDoctor;
+};
+
+/**
+ * Deletes doctor by id
+ * @param {Object} userId - The id of the doctor to be deleted
+ * @returns The deleted doctor
+ */
+export const deleteDoctorById = async (id) => {
+  if (!mongoose.Types.ObjectId.isValid(id))
+    throw new AppError("Invalid user id", 400, true, "INVALID_USER_ID");
+
+  const doctor = await docotrRepository.getDoctorById(id);
+  if (!doctor)
+    throw new AppError("No doctor found", 404, true, "DOCTOR_NOT_FOUND");
+
+  const deleteDoctor = await docotrRepository.deleteDoctor(id);
+  if (!deleteDoctor)
+    throw new AppError(
+      "Failed to delete doctor",
+      400,
+      false,
+      "FAILED_TO_DELETE_DOCTOR",
+    );
+
+  return deleteDoctor;
 };
