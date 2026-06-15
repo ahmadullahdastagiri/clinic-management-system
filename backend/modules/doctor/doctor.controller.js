@@ -6,6 +6,7 @@ import {
   getDoctorById,
   updateDoctorById,
   deleteDoctorById,
+  findDoctorByName,
 } from "./doctor.service.js";
 
 /**
@@ -57,6 +58,24 @@ export const allDoctorsController = async (req, res, next) => {
   }
 };
 
+/**
+ * GET /doctor/
+ */
+export const findDoctorController = async (req, res, next) => {
+  try {
+    const { search, page, limit } = req.query;
+    const searchData = await findDoctorByName(search, {
+      page: parseInt(page) || 1,
+      limit: parseInt(limit) || 10,
+    });
+    return res.status(200).json({
+      message: "Doctor found successfully",
+      searchData,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 /**
  * PUT /doctor/:id
  * Updates doctor by ID

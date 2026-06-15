@@ -8,6 +8,7 @@ import {
   activateDoctorController,
   deactivateDoctorController,
   deleteDoctorController,
+  findDoctorController,
 } from "./doctor.controller.js";
 
 import { createDoctorSchema, updateDoctorSchema } from "./doctor.validation.js";
@@ -21,6 +22,7 @@ router.post(
 );
 router.get("/doctor/:id", getDoctorByIdController);
 router.get("/doctors", allDoctorsController);
+router.get("/doctors/search", findDoctorController);
 router.put(
   "/doctor/:id",
   validate(updateDoctorSchema),
