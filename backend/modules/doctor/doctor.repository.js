@@ -18,7 +18,6 @@ export const getAllDoctors = async ({ page = 1, limit = 10 }) => {
     .skip(skip)
     .limit(limit)
     .populate("userId", "firstName lastName email phone")
-    .populate("userId", "firstName lastName email phone")
     .lean();
 
   const totalDoctors = await Doctor.countDocuments();
@@ -30,19 +29,71 @@ export const getAllDoctors = async ({ page = 1, limit = 10 }) => {
 export const findDoctor = async (key, { page = 1, limit = 10 }) => {
   const regex = new RegExp(escapeRegex(key), "i");
   const skip = (page - 1) * limit;
-  const doctors = await Doctor.find({
-    $or: [
-      {
-        firstName: regex,
-        lastName: regex,
+
+  const result = await Doctor.aggregate([
+    {
+      $lookup: {
+        from: "users",
+        localField: "userId",
+        foreignField: "_id",
+        as: "user",
       },
-    ],
-  })
-    .skip(skip)
-    .limit(limit)
-    .populate("userId", "firstName lastName email phone")
-    .lean();
-  return doctors;
+    },
+    {
+      $unwind: "$user",
+    },
+    {
+      $match: {
+        $or: [{ "user.firstName": regex }, { "user.lastName": regex }],
+      },
+    },
+    {
+      $facet: {
+        doctors: [
+          {
+            $sort: {
+              "user.firstName": 1,
+            },
+          },
+          {
+            $skip: skip,
+          },
+          {
+            $limit: limit,
+          },
+          {
+            $project: {
+              specialization: 1,
+              experience: 1,
+              contactNumber: 1,
+              active: 1,
+              "user.firstName": 1,
+              "user.lastName": 1,
+              "user.email": 1,
+            },
+          },
+        ],
+        totalCount: [
+          {
+            $count: "count",
+          },
+        ],
+      },
+    },
+  ]);
+
+  const doctors = result[0].doctors;
+  const totalDoctors = result[0].totalCount[0]?.count || 0;
+  const totalPages = Math.ceil(totalDoctors / limit);
+
+  return {
+    doctors,
+    pagination: {
+      totalDoctors,
+      totalPages,
+      currentPage: page,
+    },
+  };
 };
 
 /* UPDATE */
