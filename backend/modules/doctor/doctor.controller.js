@@ -2,7 +2,8 @@ import {
   createDoctor,
   getAllDoctors,
   getDoctorById,
-} from "./doctor.repository.js";
+  updateDoctorById,
+} from "./doctor.service.js";
 
 /**
  * POST /doctor/register
@@ -48,6 +49,22 @@ export const allDoctorsController = async (req, res, next) => {
       limit: parseInt(limit) || 10,
     });
     return res.status(200).json(doctors);
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * PUT /doctor/:id
+ * Updates doctor by ID
+ */
+export const updateDoctorByIdController = async (req, res, next) => {
+  try {
+    const updateDoctor = await updateDoctorById(req.params.id, req.body);
+    return res.status(200).json({
+      message: "Doctor updated successfully",
+      updateDoctor,
+    });
   } catch (error) {
     next(error);
   }

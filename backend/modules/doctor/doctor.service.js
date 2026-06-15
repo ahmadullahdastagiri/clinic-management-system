@@ -29,7 +29,7 @@ export const createDoctor = async (doctorData) => {
  * @returns The retrieved data of doctor
  */
 export const getDoctorById = async (id) => {
-  if (!mongoose.Types.ObjectId.isValid(doctorData.userId))
+  if (!mongoose.Types.ObjectId.isValid(id))
     throw new AppError("Invalid user id", 400, true, "INVALID_USER_ID");
 
   const doctor = await docotrRepository.getDoctorById(id);
@@ -56,4 +56,30 @@ export const getAllDoctors = async ({ page, limit }) => {
     throw new AppError("No doctor found", 404, true, "NO_DOCTOR_FOUND");
 
   return doctor;
+};
+
+/**
+ * Updates doctor by id
+ * @param {Object} userId - The id of doctor to be updated
+ * @param {Object} updateData - The data to update the doctor with
+ * @returns The updated doctor object
+ */
+export const updateDoctorById = async (id, updateData) => {
+  if (!mongoose.Types.ObjectId.isValid(id))
+    throw new AppError("Invalid user id", 400, true, "INVALID_USER_ID");
+
+  const doctor = await docotrRepository.getDoctorById(id);
+  if (!doctor)
+    throw new AppError("User not found", 404, true, "USER_NOT_FOUND");
+
+  const updateDoctor = await docotrRepository.updateDoctorById(id, updateData);
+  if (!updateDoctor)
+    throw new AppError(
+      "Failed to update doctor",
+      500,
+      true,
+      "FAILED_TO_UPDATE_DOCTOR",
+    );
+
+  return updateDoctor;
 };

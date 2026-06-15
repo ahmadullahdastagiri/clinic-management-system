@@ -26,3 +26,34 @@ export const createDoctorSchema = z.object({
   }),
   contactNumber: z.string().min(1, "Contact number is required"),
 });
+
+export const updateDoctorSchema = z.object({
+  userId: z.string().min(1, "User is required").optional(),
+  firstName: z.string().min(1, "Name is required").optional(),
+  lastName: z.string().min(1, "Last name is required").optional(),
+  specialization: z.string().min(1, "Specialization is required").optional(),
+  experience: z
+    .number()
+    .min(0, "Experience must be a non-negative number")
+    .optional(),
+  qualification: z.string().optional(),
+  workingHours: z.object({
+    start: z.string().min(1, "Start time is required").optional(),
+    end: z.string().min(1, "End time is required").optional(),
+    days: z
+      .array(
+        z.enum([
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday",
+        ]),
+      )
+      .min(1, "At least one working day is required")
+      .optional(),
+  }),
+  contactNumber: z.string().min(1, "Contact number is required").optional(),
+});
