@@ -5,18 +5,12 @@ const doctorSchema = new mongoose.Schema(
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
+      role: "doctor",
+      unique: true,
+      index: true,
       required: true,
     },
-    firstName: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    lastName: {
-      type: String,
-      required: true,
-      trim: true,
-    },
+
     specialization: {
       type: String,
       required: true,
