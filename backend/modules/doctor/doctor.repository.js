@@ -22,7 +22,7 @@ export const getAllDoctors = async ({ page = 1, limit = 10 }) => {
     .lean();
 
   const totalDoctors = await Doctor.countDocuments();
-  const totalPages = Math.ceil(totalUsers / limit);
+  const totalPages = Math.ceil(totalDoctors / limit);
 
   return { doctors, totalDoctors, totalPages };
 };
