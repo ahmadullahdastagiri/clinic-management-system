@@ -2,8 +2,6 @@ import { z } from "zod";
 
 export const createDoctorSchema = z.object({
   userId: z.string().min(1, "User is required"),
-  firstName: z.string().min(1, "Name is required"),
-  lastName: z.string().min(1, "Last name is required"),
   specialization: z.string().min(1, "Specialization is required"),
   experience: z.number().min(0, "Experience must be a non-negative number"),
   qualification: z.string().optional(),
@@ -29,8 +27,6 @@ export const createDoctorSchema = z.object({
 
 export const updateDoctorSchema = z.object({
   userId: z.string().min(1, "User is required").optional(),
-  firstName: z.string().min(1, "Name is required").optional(),
-  lastName: z.string().min(1, "Last name is required").optional(),
   specialization: z.string().min(1, "Specialization is required").optional(),
   experience: z
     .number()
