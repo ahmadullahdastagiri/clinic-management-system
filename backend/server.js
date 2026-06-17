@@ -6,6 +6,7 @@ import connectDB from "./config/database.config.js";
 import { errorHandler } from "./middlewares/errorHandler.middleware.js";
 import userRoutes from "./modules/users/users.route.js";
 import doctorRoutes from "./modules/doctor/doctor.route.js";
+import patientRoutes from "./modules/patient/patient.route.js";
 
 dotenv.config();
 
@@ -21,6 +22,7 @@ connectDB();
 // routes
 app.use("/api/users", userRoutes);
 app.use("/api/doctors", doctorRoutes);
+app.use("/api/patients", patientRoutes);
 app.use(errorHandler);
 const PORT = process.env.PORT || 5000;
 
