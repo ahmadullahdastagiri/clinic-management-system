@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
-import mongoose, { mongo } from "mongoose";
 import AppError from "../../utils/AppError.js";
+import { validateObjectId } from "../../utils/validateObjectId.js";
 import * as userRepository from "./users.repository.js";
 
 /** 
@@ -50,8 +50,7 @@ export const allUsers = async ({ page, limit }) => {
   @throws Will throw an error if the user id is invalid or the user is not found.
  */
 export const getUserById = async (id) => {
-  if (!mongoose.Types.ObjectId.isValid(id))
-    throw new AppError("Invalid user id", 400, true, "INVALID_USER_ID");
+  validateObjectId(id, "user");
 
   const user = await userRepository.findUserById(id);
   if (!user) throw new AppError("No user found", 404, true, "USER_NOT_FOUND");
@@ -66,8 +65,7 @@ export const getUserById = async (id) => {
   @throws Will throw an error if the user id is invalid or the user is not found.
  */
 export const updateUserById = async (id, updateData) => {
-  if (!mongoose.Types.ObjectId.isValid(id))
-    throw new AppError("Invalid user id", 400, true, "INVALID_USER_ID");
+  validateObjectId(id, "user");
 
   const user = await userRepository.findUserById(id);
   if (!user) throw new AppError("No user found", 404, true, "USER_NOT_FOUND");
@@ -106,8 +104,7 @@ export const updateUserById = async (id, updateData) => {
  * @throws Will throw an error if the user id is invalid or the user is not found.
  */
 export const updateUserPasswordById = async (id, updateData) => {
-  if (!mongoose.Types.ObjectId.isValid(id))
-    throw new AppError("Invalid user id", 400, true, "INVALID_USER_ID");
+  validateObjectId(id, "user");
 
   const user = await userRepository.findUserById(id);
   if (!user) throw new AppError("No user found", 404, true, "USER_NOT_FOUND");
@@ -136,8 +133,7 @@ export const updateUserPasswordById = async (id, updateData) => {
  * @returns {Object} The activated user object
  */
 export const activateUserById = async (id) => {
-  if (!mongoose.Types.ObjectId.isValid(id))
-    throw new AppError("Invalid user id", 400, true, "INVALID_USER_ID");
+  validateObjectId(id, "user");
 
   const user = await userRepository.findUserById(id);
   if (!user) throw new AppError("No user found", 404, true, "USER_NOT_FOUND");
@@ -160,8 +156,7 @@ export const activateUserById = async (id) => {
  * @returns {Object} The activated user object
  */
 export const deactivateUserById = async (id) => {
-  if (!mongoose.Types.ObjectId.isValid(id))
-    throw new AppError("Invalid user id", 400, true, "INVALID_USER_ID");
+  validateObjectId(id, "user");
 
   const user = await userRepository.findUserById(id);
   if (!user) throw new AppError("No user found", 404, true, "USER_NOT_FOUND");
@@ -185,8 +180,7 @@ export const deactivateUserById = async (id) => {
  * @returns {Object} The updated user with the assign role.
  */
 export const assignRoleById = async (id, assignRole) => {
-  if (!mongoose.Types.ObjectId.isValid(id))
-    throw new AppError("Invalid user id", 400, true, "INVALID_USER_ID");
+  validateObjectId(id, "user");
 
   const user = await userRepository.findUserById(id);
   if (!user) throw new AppError("No user found", 404, true, "USER_NOT_FOUND");
@@ -211,8 +205,7 @@ export const assignRoleById = async (id, assignRole) => {
  * @returns {Object} The deleted user
  */
 export const deleteUserById = async (id) => {
-  if (!mongoose.Types.ObjectId.isValid(id))
-    throw new AppError("Invalid user id", 400, true, "INVALID_USER_ID");
+  validateObjectId(id, "user");
 
   const user = await userRepository.findUserById(id);
   if (!user) throw new AppError("No user found", 404, true, "USER_NOT_FOUND");
