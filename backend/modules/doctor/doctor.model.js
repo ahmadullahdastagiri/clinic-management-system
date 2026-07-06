@@ -1,12 +1,19 @@
 import mongoose from "mongoose";
 
+import generateUniqueId from "../../utils/generateUniqueId.js";
+
 const doctorSchema = new mongoose.Schema(
   {
+    doctorCode: {
+      type: String,
+      unique: true,
+      trim: true,
+      index: true,
+    },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       role: "doctor",
-      unique: true,
       index: true,
       required: true,
     },
@@ -63,6 +70,14 @@ const doctorSchema = new mongoose.Schema(
     timestamps: true,
   },
 );
+
+doctorSchema.pre("save", async function () {
+  if (!this.isNew || this.doctorCode) {
+    return;
+  }
+
+  this.doctorCode = await generateUniqueId("DR", "doctor");
+});
 
 const Doctor = mongoose.model("Doctor", doctorSchema);
 

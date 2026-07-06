@@ -1,6 +1,6 @@
-import mongoose from "mongoose";
 import * as doctorRepository from "./doctor.repository.js";
 import AppError from "../../utils/AppError.js";
+import { validateObjectId } from "../../utils/validateObjectId.js";
 
 /**
  * Create a new doctor profile
@@ -8,8 +8,7 @@ import AppError from "../../utils/AppError.js";
  * @returns  The created doctor profile
  */
 export const createDoctor = async (doctorData) => {
-  if (!mongoose.Types.ObjectId.isValid(doctorData.userId))
-    throw new AppError("Invalid user id", 400, true, "INVALID_USER_ID");
+  validateObjectId(doctorData.userId, "user");
 
   const doctor = await doctorRepository.createDoctor(doctorData);
   if (!doctor)
@@ -29,8 +28,7 @@ export const createDoctor = async (doctorData) => {
  * @returns The retrieved data of doctor
  */
 export const getDoctorById = async (id) => {
-  if (!mongoose.Types.ObjectId.isValid(id))
-    throw new AppError("Invalid user id", 400, true, "INVALID_USER_ID");
+  validateObjectId(id, "doctor");
 
   const doctor = await doctorRepository.getDoctorById(id);
   if (!doctor)
@@ -85,8 +83,7 @@ export const findDoctorByName = async (
  * @returns The updated doctor object
  */
 export const updateDoctorById = async (id, updateData) => {
-  if (!mongoose.Types.ObjectId.isValid(id))
-    throw new AppError("Invalid user id", 400, true, "INVALID_USER_ID");
+  validateObjectId(id, "doctor");
 
   const doctor = await doctorRepository.getDoctorById(id);
   if (!doctor)
@@ -110,8 +107,7 @@ export const updateDoctorById = async (id, updateData) => {
  * @returns The activate doctor object
  */
 export const activateDoctorById = async (id) => {
-  if (!mongoose.Types.ObjectId.isValid(id))
-    throw new AppError("Invalid user id", 400, true, "INVALID_USER_ID");
+  validateObjectId(id, "doctor");
 
   const activateDoctor = await doctorRepository.activateDoctorById(id);
   if (!activateDoctor)
@@ -131,8 +127,7 @@ export const activateDoctorById = async (id) => {
  * @returns The deactivate doctor object
  */
 export const deactivateDoctorById = async (id) => {
-  if (!mongoose.Types.ObjectId.isValid(id))
-    throw new AppError("Invalid user id", 400, true, "INVALID_USER_ID");
+  validateObjectId(id, "doctor");
 
   const deactivateDoctor = await doctorRepository.deactivateDoctorById(id);
   if (!deactivateDoctor)
@@ -152,8 +147,7 @@ export const deactivateDoctorById = async (id) => {
  * @returns The deleted doctor
  */
 export const deleteDoctorById = async (id) => {
-  if (!mongoose.Types.ObjectId.isValid(id))
-    throw new AppError("Invalid user id", 400, true, "INVALID_USER_ID");
+  validateObjectId(id, "doctor");
 
   const doctor = await doctorRepository.getDoctorById(id);
   if (!doctor)

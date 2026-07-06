@@ -1,12 +1,6 @@
-import mongoose from "mongoose";
 import AppError from "../../utils/AppError.js";
+import { validateObjectId } from "../../utils/validateObjectId.js";
 import * as patientRepository from "./patient.repository.js";
-
-const validatePatientId = (id) => {
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    throw new AppError("Invalid patient id", 400, true, "INVALID_PATIENT_ID");
-  }
-};
 
 /**
  * Create a new patient.
@@ -34,7 +28,7 @@ export const createPatient = async (patientData) => {
  * @returns The selected patient.
  */
 export const getPatientById = async (id) => {
-  validatePatientId(id);
+  validateObjectId(id, "patient");
 
   const patient = await patientRepository.getPatientById(id);
   if (!patient) {
@@ -89,7 +83,7 @@ export const searchPatients = async (key, { page = 1, limit = 10 } = {}) => {
  * @returns The updated patient.
  */
 export const updatePatientById = async (id, updateData) => {
-  validatePatientId(id);
+  validateObjectId(id, "patient");
 
   const patient = await patientRepository.getPatientById(id);
   if (!patient) {
@@ -118,7 +112,7 @@ export const updatePatientById = async (id, updateData) => {
  * @returns The activated patient.
  */
 export const activatePatientById = async (id) => {
-  validatePatientId(id);
+  validateObjectId(id, "patient");
 
   const patient = await patientRepository.activatePatientById(id);
   if (!patient) {
@@ -134,7 +128,7 @@ export const activatePatientById = async (id) => {
  * @returns The deactivated patient.
  */
 export const deactivatePatientById = async (id) => {
-  validatePatientId(id);
+  validateObjectId(id, "patient");
 
   const patient = await patientRepository.deactivatePatientById(id);
   if (!patient) {
@@ -150,7 +144,7 @@ export const deactivatePatientById = async (id) => {
  * @returns The deleted patient.
  */
 export const deletePatientById = async (id) => {
-  validatePatientId(id);
+  validateObjectId(id, "patient");
 
   const patient = await patientRepository.getPatientById(id);
   if (!patient) {

@@ -1,9 +1,17 @@
 import mongoose from "mongoose";
 
+import generateUniqueId from "../../utils/generateUniqueId.js";
+
 const BLOOD_GROUPS = ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"];
 
 const patientSchema = new mongoose.Schema(
   {
+    patientCode: {
+      type: String,
+      unique: true,
+      trim: true,
+      index: true,
+    },
     firstName: {
       type: String,
       required: [true, "Patient first name is required"],
@@ -62,6 +70,14 @@ const patientSchema = new mongoose.Schema(
 );
 
 patientSchema.index({ firstName: 1, lastName: 1 });
+
+patientSchema.pre("save", async function () {
+  if (!this.isNew || this.patientCode) {
+    return;
+  }
+
+  this.patientCode = await generateUniqueId("PT", "patient");
+});
 
 const Patient = mongoose.model("Patient", patientSchema);
 
