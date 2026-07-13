@@ -60,6 +60,14 @@ export const getAllAppointments = async ({
     search,
   });
 
+  if (!appointments)
+    throw new AppError(
+      "No appointments found",
+      404,
+      true,
+      "NO_APPOINTMENTS_FOUND",
+    );
+
   return appointments;
 };
 
@@ -73,6 +81,15 @@ export const getAppointmentsByDoctor = async (doctorId) => {
 
   const appointments =
     await appointmentRepository.getAppointmentsByDoctor(doctorId);
+
+  if (!appointments)
+    throw new AppError(
+      "No appointments found",
+      404,
+      true,
+      "NO_APPOINTMENTS_FOUND",
+    );
+
   return appointments;
 };
 
@@ -116,6 +133,14 @@ export const findDoctorAppointmentSlot = async ({
     appointmentDate,
     appointmentTime,
   });
+
+  if (!appointments)
+    throw new AppError(
+      "No appointments found",
+      404,
+      true,
+      "NO_APPOINTMENTS_FOUND",
+    );
 
   return appointment;
 };
