@@ -298,6 +298,8 @@ export const getAllLaboratoryResults = async ({
 
   if (Object.keys(filter).length > 0) pipeline.push({ $match: filter });
 
+  pipeline.push({ $unset: "patient" });
+
   pipeline.push({
     $facet: {
       results: [
