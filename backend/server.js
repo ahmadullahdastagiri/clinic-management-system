@@ -8,6 +8,7 @@ import userRoutes from "./modules/users/users.route.js";
 import doctorRoutes from "./modules/doctor/doctor.route.js";
 import patientRoutes from "./modules/patient/patient.route.js";
 import appointmentRoutes from "./modules/appointment/appointment.route.js";
+import laboratoryRoutes from "./modules/laboratory/laboratory.route.js";
 
 dotenv.config();
 
@@ -25,6 +26,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/doctors", doctorRoutes);
 app.use("/api/patients", patientRoutes);
 app.use("/api/appointments", appointmentRoutes);
+app.use("/api/laboratories", laboratoryRoutes);
 app.use(errorHandler);
 const PORT = process.env.PORT || 5000;
 
