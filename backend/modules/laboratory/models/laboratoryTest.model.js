@@ -73,6 +73,7 @@ const laboratoryTestSchema = new mongoose.Schema(
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
+      unique: false,
       index: true,
     },
   },
