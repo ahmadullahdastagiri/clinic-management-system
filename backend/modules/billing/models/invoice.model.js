@@ -23,10 +23,12 @@ const invoiceItemSchema = new mongoose.Schema(
     quantity: {
       type: Number,
       required: true,
+      min: 0.01,
     },
     unitPrice: {
       type: Number,
       required: true,
+      min: 0,
     },
     amount: {
       type: Number,
@@ -78,18 +80,38 @@ const invoiceSchema = new mongoose.Schema(
     },
     discount: {
       type: Number,
+      min: 0,
+    },
+    discountValue: {
+      type: Number,
+      min: 0,
     },
     tax: {
       type: Number,
+      min: 0,
+    },
+    discountType: {
+      type: String,
+      enum: ["fixed", "percentage"],
+      default: "fixed",
+    },
+    taxRate: {
+      type: Number,
+      min: 0,
+      max: 100,
+      default: 0,
     },
     totalAmount: {
       type: Number,
+      min: 0,
     },
     paidAmount: {
       type: Number,
+      min: 0,
     },
     dueAmount: {
       type: Number,
+      min: 0,
     },
     status: {
       type: String,
