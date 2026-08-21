@@ -73,8 +73,10 @@ const addPatientLookup = (pipeline) => {
   );
 };
 
-export const createInvoice = (payload, options = {}) =>
-  Invoice.create(payload, options);
+export const createInvoice = async (payload, options = {}) => {
+  const [invoice] = await Invoice.create([payload], options);
+  return invoice;
+};
 
 export const getInvoiceById = (id, { session } = {}) => {
   const query = Invoice.findById(id).populate(invoicePopulate).lean();
@@ -103,6 +105,8 @@ export const getAllInvoices = async ({
   if (currency) filter.currency = currency;
   if (patientId) filter.patientId = toObjectId(patientId);
   if (Object.keys(filter).length) pipeline.push({ $match: filter });
+
+  pipeline.push({ $unset: "patient" });
 
   pipeline.push({
     $facet: {
