@@ -11,7 +11,8 @@ const toObjectId = (value) =>
 const paymentPopulate = [
   {
     path: "invoiceId",
-    select: "invoiceNumber patientId totalAmount paidAmount dueAmount status currency",
+    select:
+      "invoiceNumber patientId totalAmount paidAmount dueAmount status currency",
   },
   {
     path: "patientId",
@@ -71,8 +72,10 @@ const addPatientLookup = (pipeline) => {
   );
 };
 
-export const createPayment = (payload, options = {}) =>
-  Payment.create(payload, options);
+export const createPayment = async (payload, options = {}) => {
+  const [payment] = await Payment.create([payload], options);
+  return payment;
+};
 
 export const getPaymentById = (id, { session } = {}) => {
   const query = Payment.findById(id).populate(paymentPopulate).lean();
