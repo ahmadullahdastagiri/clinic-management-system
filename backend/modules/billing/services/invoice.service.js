@@ -60,7 +60,6 @@ const getInvoicePayments = (invoiceId) =>
 export const createInvoice = async (payload) => {
   validateIdFields(payload, invoiceIdFields);
 
-  console.log("Creating invoice with payload:", payload.patientId);
   const invoice = await invoiceRepository.createInvoice(
     prepareInvoicePayload(payload),
   );
