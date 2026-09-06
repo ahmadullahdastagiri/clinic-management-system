@@ -80,6 +80,7 @@ export const createInvoice = async (payload, options = {}) => {
 
 export const getInvoiceById = (id, { session } = {}) => {
   const query = Invoice.findById(id).populate(invoicePopulate).lean();
+  const result = query.session(session);
   return session ? query.session(session) : query;
 };
 
