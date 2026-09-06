@@ -21,7 +21,7 @@ export const createLaboratoryTest = async (payload) => {
   const checkLaboratoryTest =
     await laboratoryRepository.getLaboratoryTestByName(name);
 
-  if (checkLaboratoryTest)
+  if (checkLaboratoryTest.length > 0)
     throw new AppError(
       "The test with this name already exists",
       400,
@@ -109,7 +109,7 @@ export const updateLaboratoryTestById = async (id, payload) => {
   const updatedLaboratoryTest =
     await laboratoryRepository.updateLaboratoryTestById(id, payload);
 
-  if (!laboratoryTest)
+  if (!updatedLaboratoryTest)
     throw new AppError(
       "Failed to update laboratory test",
       404,
