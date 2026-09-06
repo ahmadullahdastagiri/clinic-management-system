@@ -13,7 +13,6 @@ export function calculateSubtotal(items = []) {
     const amount =
       item.amount ?? calculateItemAmount(item.quantity, item.unitPrice);
 
-    console.log(total, amount);
     return total + amount;
   }, 0);
 }
