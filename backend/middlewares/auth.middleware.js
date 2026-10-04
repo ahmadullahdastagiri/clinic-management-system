@@ -1,11 +1,27 @@
 import jwt from "jsonwebtoken";
 import AppError from "../utils/AppError.js";
 
+const getCookie = (req, name) => {
+  const cookieHeader = req.headers.cookie;
+  if (!cookieHeader) return undefined;
+
+  for (const cookie of cookieHeader.split(";")) {
+    const separatorIndex = cookie.indexOf("=");
+    if (separatorIndex < 0) continue;
+
+    if (cookie.slice(0, separatorIndex).trim() === name) {
+      return cookie.slice(separatorIndex + 1).trim();
+    }
+  }
+};
+
 export const authenticate = (req, res, next) => {
   const authorization = req.headers.authorization;
-  const [scheme, token] = authorization?.split(" ") || [];
+  const [scheme, headerToken] = authorization?.split(" ") || [];
+  const token =
+    (scheme === "Bearer" && headerToken) || getCookie(req, "accessToken");
 
-  if (scheme !== "Bearer" || !token) {
+  if (!token) {
     return next(
       new AppError(
         "Authentication token is required",
