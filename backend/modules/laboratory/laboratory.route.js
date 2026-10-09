@@ -1,6 +1,7 @@
 import express from "express";
 
 import { validate } from "../../middlewares/validation.middleware.js";
+import { authenticate, authorize } from "../../middlewares/auth.middleware.js";
 import {
   createLaboratoryOrderController,
   createLaboratoryResultController,
@@ -29,14 +30,25 @@ import {
 
 const router = express.Router();
 
+router.use(authenticate);
+
 /* LAB TESTS */
 router.post(
   "/tests",
+  authorize("admin"),
   validate(createLaboratoryTestSchema),
   createLaboratoryTestController,
 );
-router.get("/tests", getAllLaboratoryTestsController);
-router.get("/tests/:id", getLaboratoryTestByIdController);
+router.get(
+  "/tests",
+  authorize("admin", "laboratorian"),
+  getAllLaboratoryTestsController,
+);
+router.get(
+  "/tests/:id",
+  authorize("admin", "laboratorian"),
+  getLaboratoryTestByIdController,
+);
 router.put(
   "/tests/:id",
   validate(updateLaboratoryTestSchema),
@@ -47,31 +59,59 @@ router.delete("/tests/:id", deleteLaboratoryTestByIdController);
 /* LAB ORDERS */
 router.post(
   "/orders",
+  authorize("admin", "receptionist"),
   validate(createLaboratoryOrderSchema),
   createLaboratoryOrderController,
 );
-router.get("/orders", getAllLaboratoryOrdersController);
-router.get("/orders/:id", getLaboratoryOrderByIdController);
+router.get(
+  "/orders",
+  authorize("admin", "receptionist", "laboratorian"),
+  getAllLaboratoryOrdersController,
+);
+router.get(
+  "/orders/:id",
+  authorize("admin", "receptionist", "laboratorian"),
+  getLaboratoryOrderByIdController,
+);
 router.put(
   "/orders/:id",
+  authorize("admin", "receptionist"),
   validate(updateLaboratoryOrderSchema),
   updateLaboratoryOrderByIdController,
 );
-router.delete("/orders/:id", deleteLaboratoryOrderByIdController);
+router.delete(
+  "/orders/:id",
+  authorize("admin", "receptionist"),
+  deleteLaboratoryOrderByIdController,
+);
 
 /* LAB RESULTS */
 router.post(
   "/results",
+  authorize("admin", "laboratorian"),
   validate(createLaboratoryResultSchema),
   createLaboratoryResultController,
 );
-router.get("/results", getAllLaboratoryResultsController);
-router.get("/results/:id", getLaboratoryResultByIdController);
+router.get(
+  "/results",
+  authorize("admin", "laboratorian"),
+  getAllLaboratoryResultsController,
+);
+router.get(
+  "/results/:id",
+  authorize("admin", "laboratorian"),
+  getLaboratoryResultByIdController,
+);
 router.put(
   "/results/:id",
+  authorize("admin", "laboratorian"),
   validate(updateLaboratoryResultSchema),
   updateLaboratoryResultByIdController,
 );
-router.delete("/results/:id", deleteLaboratoryResultByIdController);
+router.delete(
+  "/results/:id",
+  authorize("admin", "laboratorian"),
+  deleteLaboratoryResultByIdController,
+);
 
 export default router;
