@@ -11,6 +11,7 @@ import {
   updateUserPasswordController,
 } from "./users.controller.js";
 import { validate } from "../../middlewares/validation.middleware.js";
+import { authenticate, authorize } from "../../middlewares/auth.middleware.js";
 import {
   createUserSchema,
   updateUserSchema,
@@ -19,6 +20,8 @@ import {
 } from "./users.validation.js";
 
 const router = express.Router();
+
+router.use(authenticate, authorize("admin"));
 
 router.post("/register", validate(createUserSchema), createUserController);
 router.get("/users", getAllUsersController);
