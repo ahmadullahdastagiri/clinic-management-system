@@ -1,5 +1,6 @@
 import express from "express";
 import { validate } from "../../middlewares/validation.middleware.js";
+import { authenticate, authorize } from "../../middlewares/auth.middleware.js";
 import {
   activatePatientController,
   createPatientController,
@@ -16,6 +17,8 @@ import {
 } from "./patient.validation.js";
 
 const router = express.Router();
+
+router.use(authenticate, authorize("admin", "receptionist"));
 
 router.post(
   "/patient/register",
