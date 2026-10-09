@@ -1,5 +1,6 @@
 import express from "express";
 import { validate } from "../../middlewares/validation.middleware.js";
+import { authenticate, authorize } from "../../middlewares/auth.middleware.js";
 import {
   createDoctorController,
   getDoctorByIdController,
@@ -14,6 +15,8 @@ import {
 import { createDoctorSchema, updateDoctorSchema } from "./doctor.validation.js";
 
 const router = express.Router();
+
+router.use(authenticate, authorize("admin"));
 
 router.post(
   "/doctor/register",
