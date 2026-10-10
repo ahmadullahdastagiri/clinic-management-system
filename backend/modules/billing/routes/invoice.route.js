@@ -2,6 +2,10 @@ import express from "express";
 
 import { validate } from "../../../middlewares/validation.middleware.js";
 import {
+  authenticate,
+  authorize,
+} from "../../../middlewares/auth.middleware.js";
+import {
   createInvoiceController,
   deleteInvoiceByIdController,
   getAllInvoicesController,
@@ -19,26 +23,46 @@ import {
 
 const router = express.Router();
 
-/* INVOICES */
+router.use(authenticate);
+
 router.post(
   "/invoices",
+  authorize("admin", "receptionist"),
   validate(createInvoiceSchema),
   createInvoiceController,
 );
-router.get("/invoices", getAllInvoicesController);
-router.get("/invoices/patient/:patientId", getInvoicesByPatientController);
-router.get("/invoices/:id/pdf", getInvoicePdfController);
-router.get("/invoices/:id", getInvoiceByIdController);
+router.get(
+  "/invoices",
+  authorize("admin", "receptionist"),
+  getAllInvoicesController,
+);
+router.get(
+  "/invoices/patient/:patientId",
+  authorize("admin", "receptionist"),
+  getInvoicesByPatientController,
+);
+router.get(
+  "/invoices/:id/pdf",
+  authorize("admin", "receptionist"),
+  getInvoicePdfController,
+);
+router.get(
+  "/invoices/:id",
+  authorize("admin", "receptionist"),
+  getInvoiceByIdController,
+);
 router.put(
   "/invoices/:id",
+  authorize("admin", "receptionist"),
   validate(updateInvoiceSchema),
   updateInvoiceByIdController,
 );
 router.patch(
   "/invoices/:id/status",
+  authorize("admin", "receptionist"),
   validate(updateInvoiceStatusSchema),
   updateInvoiceStatusController,
 );
-router.delete("/invoices/:id", deleteInvoiceByIdController);
+router.delete("/invoices/:id", authorize("admin"), deleteInvoiceByIdController);
 
 export default router;
