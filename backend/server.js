@@ -1,9 +1,12 @@
 import express from "express";
 import dotenv from "dotenv";
 import morgan from "morgan";
+import cookieParser from "cookie-parser";
+import cors from "cors";
 
 import connectDB from "./config/database.config.js";
 import { errorHandler } from "./middlewares/errorHandler.middleware.js";
+import authRoutes from "./modules/auth/auth.route.js";
 import userRoutes from "./modules/users/users.route.js";
 import doctorRoutes from "./modules/doctor/doctor.route.js";
 import patientRoutes from "./modules/patient/patient.route.js";
@@ -11,7 +14,6 @@ import appointmentRoutes from "./modules/appointment/appointment.route.js";
 import laboratoryRoutes from "./modules/laboratory/laboratory.route.js";
 import invoiceRoutes from "./modules/billing/routes/invoice.route.js";
 import paymentRoutes from "./modules/billing/routes/payment.route.js";
-
 dotenv.config();
 
 const app = express();
@@ -19,11 +21,18 @@ const app = express();
 // middleware
 app.use(morgan("dev"));
 app.use(express.json());
-
+app.use(cookieParser());
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL,
+    credentials: true,
+  }),
+);
 // connect to database
 connectDB();
 
 // routes
+app.use("/api", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/doctors", doctorRoutes);
 app.use("/api/patients", patientRoutes);
